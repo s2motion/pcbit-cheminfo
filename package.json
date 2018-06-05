@@ -13,6 +13,7 @@
     "http-errors": "~1.6.2",
     "jquery": "^3.3.1",
     "morgan": "~1.9.0",
+    "node-gyp": "^3.6.2",
     "pug": "2.0.0-beta11"
   }
 }
