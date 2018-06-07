@@ -57,20 +57,25 @@ xml.on('endElement: Chemical', function(item) {
   // console.log(chemical_info);
 
   //set chemical info on database
-  db.serialize(function() {
-    db.run("delete from chemical");    
-    var stmt = db.prepare("insert into chemical(uuid, display_formula, display_name, systematic_name, descriptor_name, name_substance, cas_registry_number) values (?,?,?,?,?,?,?)");
-    stmt.run(chemical_info['uuid'],chemical_info['display_formula'],chemical_info['display_name'],chemical_info['systematic_name'],chemical_info['descriptor_name'],chemical_info['name_substance'],chemical_info['cas_registry_number']);    
-    stmt.finalize();
 
-    chemical_cnt += 1;
+  if(chemical_cnt < 50) {          
+    db.serialize(function() {
+      db.run("delete from chemical");    
+      var stmt = db.prepare("insert into chemical(uuid, display_formula, display_name, systematic_name, descriptor_name, name_substance, cas_registry_number) values (?,?,?,?,?,?,?)");
+      stmt.run(chemical_info['uuid'],chemical_info['display_formula'],chemical_info['display_name'],chemical_info['systematic_name'],chemical_info['descriptor_name'],chemical_info['name_substance'],chemical_info['cas_registry_number']);    
+      stmt.finalize();
 
-    console.log("added chemical count : " + chemical_cnt);
+      chemical_cnt += 1;
 
-    db.on("error", function(error) {
-      console.log("Getting an error : ", error);
-    }); 
-  });  
+      console.log("added chemical count : " + chemical_cnt);
+
+      db.on("error", function(error) {
+        console.log("Getting an error : ", error);
+      }); 
+    });      
+  }else{    
+    throw new Error('Something went wrong');          
+  }
 });
 
 db.on("error", function(error) {
