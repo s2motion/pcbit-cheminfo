@@ -8,5 +8,5 @@ var xml = new XmlStream(stream);
 xml.preserve('Chemical', true);
 xml.collect('subitem');
 xml.on('endElement: Chemical', function(item) {
-  console.log(item['$']['displayName']);
+  console.log(item);
 })
