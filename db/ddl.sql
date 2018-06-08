@@ -1,5 +1,7 @@
+DROP TABLE chemical;
 CREATE TABLE chemical (
     uuid                  TEXT NOT NULL PRIMARY KEY,
+    chemidplus_id         TEXT,
     display_formula       TEXT,
     display_name          TEXT,
     systematic_name       TEXT,
