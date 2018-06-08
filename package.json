@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "big-xml": "^1.0.0",
     "bootstrap": "^3.3.7",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
@@ -14,6 +15,8 @@
     "jquery": "^3.3.1",
     "morgan": "~1.9.0",
     "node-gyp": "^3.6.2",
-    "pug": "2.0.0-beta11"
+    "pug": "2.0.0-beta11",
+    "xml-stream": "^0.4.5",
+    "xml2js": "^0.4.19"
   }
 }
