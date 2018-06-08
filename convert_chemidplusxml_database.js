@@ -70,7 +70,6 @@ xml.on('endElement: Chemical', function(item) {
 
   //set chemical info on database
 
-
   if(chemical_cnt >= 200000) {
     db.serialize(function() {      
       var stmt = db.prepare("insert into chemical(uuid, chemidplus_id, display_formula, display_name, systematic_name, descriptor_name, name_substance, cas_registry_number) values (?,?,?,?,?,?,?,?)");
