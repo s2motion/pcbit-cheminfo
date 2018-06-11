@@ -57,11 +57,11 @@ CREATE TABLE othernumberlist (
     FOREIGN KEY(chemical_uuid) REFERENCES chemical(uuid)
 );
 
+DROP TABLE sourcelist;
 CREATE TABLE sourcelist (
     uuid     TEXT NOT NULL ,
     code     TEXT NOT NULL ,
-    source   TEXT,
-    PRIMARY KEY (uuid, code)
+    source   TEXT
 );
 
 CREATE TABLE synonyms (
