@@ -691,7 +691,6 @@
             <ClassificationCode>Agricultural Chemical
                 <SourceList>
                     <Source>RTECS</Source>
-                    <Source>AAAA</Source>
                 </SourceList>
             </ClassificationCode>
             <ClassificationCode>Disinfectant
