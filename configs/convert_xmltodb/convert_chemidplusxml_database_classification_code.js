@@ -30,6 +30,14 @@ xml.on('endElement: Chemical', function(item) {
 
   classification_list['id'] = item['$']['id']
 
+   if(chemical_cnt > 200000) {
+    // db.serialize(function() {
+    //   var stmt = db.prepare("insert into chemical(uuid, chemidplus_id, display_formula, display_name, systematic_name, descriptor_name, name_substance, cas_registry_number) values (?,?,?,?,?,?,?,?)");
+    //   stmt.run(chemical_info['uuid'],chemical_info['id'], chemical_info['displayFormula'],chemical_info['displayName'],chemical_info['SystematicName'],chemical_info['DescriptorName'],chemical_info['NameOfSubstance'],chemical_info['CASRegistryNumber']);
+    //   stmt.finalize();
+
+    console.log(chemical_cnt + " added");
+
 
   if(item['ClassificationList']){
 
@@ -105,24 +113,15 @@ xml.on('endElement: Chemical', function(item) {
 
   }
 
-  //set chemical info on database
-
-  if(chemical_cnt <= 200000) {
-    // db.serialize(function() {
-    //   var stmt = db.prepare("insert into chemical(uuid, chemidplus_id, display_formula, display_name, systematic_name, descriptor_name, name_substance, cas_registry_number) values (?,?,?,?,?,?,?,?)");
-    //   stmt.run(chemical_info['uuid'],chemical_info['id'], chemical_info['displayFormula'],chemical_info['displayName'],chemical_info['SystematicName'],chemical_info['DescriptorName'],chemical_info['NameOfSubstance'],chemical_info['CASRegistryNumber']);
-    //   stmt.finalize();
-
-    console.log(chemical_cnt + " added");
-
-    //   db.on("error", function(error) {
+   //   db.on("error", function(error) {
     //     console.log("Getting an error : ", error);
     //   });
     // });
   }else{
-    throw new Error('Something went wrong');
+    // throw new Error('Something went wrong');
   }
 
+  //set chemical info on database
   chemical_cnt += 1;
 
 });
