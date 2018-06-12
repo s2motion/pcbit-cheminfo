@@ -4,7 +4,6 @@ CREATE TABLE chemical (
     chemidplus_id         TEXT,
     display_formula       TEXT,
     display_name          TEXT,
-    systematic_name       TEXT,
     descriptor_name       TEXT,
     name_substance        TEXT,
     cas_registry_number   TEXT
@@ -18,13 +17,6 @@ CREATE TABLE classificationlist (
     FOREIGN KEY(chemical_uuid) REFERENCES chemical(uuid)
 );
 
-CREATE TABLE formulafragmentlist (
-    uuid                TEXT NOT NULL PRIMARY KEY ,
-    chemical_uuid       TEXT NOT NULL,
-    formular_fragment   TEXT,
-    FOREIGN KEY(chemical_uuid) REFERENCES chemical(uuid)
-);
-
 
 CREATE TABLE locatorlist (
     uuid            TEXT NOT NULL PRIMARY KEY ,
@@ -35,12 +27,29 @@ CREATE TABLE locatorlist (
     FOREIGN KEY(chemical_uuid) REFERENCES chemical(uuid)
 );
 
-CREATE TABLE molecularformula (
+-- molecularformula, formulaframentlist 대체
+CREATE TABLE formula (
     uuid                TEXT NOT NULL PRIMARY KEY ,
+    type                TEXT NOT NULL, -- ff: FormulaFragmentList, mf: MolecularFormula
     chemical_uuid       TEXT NOT NULL,
-    molecular_formula   TEXT,
+    formula   TEXT,
     FOREIGN KEY(chemical_uuid) REFERENCES chemical(uuid)
 );
+
+-- CREATE TABLE molecularformula (
+--     uuid                TEXT NOT NULL PRIMARY KEY ,
+--     chemical_uuid       TEXT NOT NULL,
+--     molecular_formula   TEXT,
+--     FOREIGN KEY(chemical_uuid) REFERENCES chemical(uuid)
+-- );
+
+-- CREATE TABLE formulafragmentlist (
+--     uuid                TEXT NOT NULL PRIMARY KEY ,
+--     chemical_uuid       TEXT NOT NULL,
+--     formular_fragment   TEXT,
+--     FOREIGN KEY(chemical_uuid) REFERENCES chemical(uuid)
+-- );
+
 
 CREATE TABLE notelist (
     uuid            TEXT NOT NULL PRIMARY KEY ,
@@ -67,6 +76,7 @@ CREATE TABLE sourcelist (
 CREATE TABLE synonyms (
     uuid            TEXT NOT NULL PRIMARY KEY,
     chemical_uuid   TEXT NOT NULL,
+    type   TEXT NOT NULL,
     name            TEXT,
     FOREIGN KEY(chemical_uuid) REFERENCES chemical(uuid)
 );
