@@ -1,3 +1,5 @@
+/* Create classificastion */
+
 -- update classification chemical_uuid
 -- classificationlist 업로드 후 chemical_uuid 매칭
 -- update classificationlist set chemical_uuid = (select chem.uuid from chemical as chem where chem.chemidplus_id = classificationlist.chemidplus_id);
@@ -16,13 +18,14 @@ CREATE TABLE chemical_temp
   cas_registry_number TEXT
 );
 
-UPDATE classificationlist
-SET chemical_uuid = (SELECT chem.uuid
-                     FROM chemical_temp AS chem
-                     WHERE chem.chemidplus_id = classificationlist.chemidplus_id);
+-- UPDATE classificationlist
+-- SET chemical_uuid = (SELECT chem.uuid
+--                      FROM chemical_temp AS chem
+--                      WHERE chem.chemidplus_id = classificationlist.chemidplus_id);
 -- 잘됨..
 
--- select classificationlist with sourcelist
+select count(*) from classificationlist;
+
 SELECT
   chem.uuid,
   chem.display_name,
@@ -40,6 +43,8 @@ FROM chemical AS chem
 WHERE class.type = 'cc'
 ORDER BY class.chemidplus_id
 
+/* Create synonym in chemical table */
+
 -- Name of substance, Systematic Name은 다수 존재로 chemical table에서 systematic_name, Name of substance 삭제, synonyms table에 type 추가
 -- type은 sy: Synonym, sn:Systematic name, su:Substance Name
 -- SQLite에서는 drop column 지원하지 않음 따라서 테이블 삭제 후 생성
@@ -55,6 +60,21 @@ CREATE TABLE chemical_for_sym
 -- INSERT INTO chemical_for_sym select uuid, chemidplus_id, display_formula, display_name, descriptor_name, cas_registry_number from chemical;
 -- drop table chemical;
 -- alter table chemical_for_sym RENAME TO chemical;
+
+/* Create formular data */
+
+-- formular table 생성
+CREATE TABLE formula (
+    uuid                TEXT NOT NULL PRIMARY KEY ,
+    type                TEXT NOT NULL, -- ff: FormulaFragmentList, mf: MolecularFormula
+    chemical_uuid       TEXT NOT NULL,
+    formula   TEXT,
+    FOREIGN KEY(chemical_uuid) REFERENCES chemical(uuid)
+);
+
+
+/* Create synonym data */
+
 -- drop table synonyms;
 -- CREATE TABLE synonyms
 -- (
@@ -85,36 +105,14 @@ WHERE source.code = 'na';
 -- check type column whether is null
 -- select * from synonyms_forxml where type is null;
 
--- formular table 생성
-CREATE TABLE formula (
-    uuid                TEXT NOT NULL PRIMARY KEY ,
-    type                TEXT NOT NULL, -- ff: FormulaFragmentList, mf: MolecularFormula
-    chemical_uuid       TEXT NOT NULL,
-    formula   TEXT,
-    FOREIGN KEY(chemical_uuid) REFERENCES chemical(uuid)
-);
-
 -- synonym 관련 데이터 삭제
 delete from sourcelist where uuid  in (select uuid from synonyms_forxml);
 delete from synonyms_forxml;
+-- select * from synonyms_forxml;
 
--- chemical table drop column
--- CREATE TABLE chemical_dropcloumn
--- (
---   uuid                TEXT
---     PRIMARY KEY,
---   chemidplus_id       TEXT,
---   display_formula     TEXT,
---   display_name        TEXT,
---   cas_registry_number TEXT
--- );
---
--- insert into chemical_dropcloumn(uuid, chemidplus_id, display_formula, display_name, cas_registry_number)
---   select uuid, chemidplus_id, display_formula, display_name, cas_registry_number from chemical;
--- drop table chemical;
--- alter table chemical_dropcloumn RENAME TO chemical;
+-- convert_chemidplusxml_database_synonym.js 실행
 
--- delete from sourcelist where not exists (select 1 from classificationlist where classificationlist.uuid = sourcelist.uuid);
+
 
 
 
