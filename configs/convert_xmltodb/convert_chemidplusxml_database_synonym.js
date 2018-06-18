@@ -9,6 +9,10 @@ let db = new sqlite3.Database('../../db/pcbit.db', (err) => {
   console.log('Connected to the pcbit database.');
 });
 
+db.run('PRAGMA journal_mode=off');
+db.run('PRAGMA synchronous=off');
+db.run('PRAGMA locking_mode=exclusive');
+
 //load ChemidIDPlus.xml (Current)
 // var stream = fs.createReadStream(__dirname + '/../../data/chemidplus/chemid_sample.xml');
 var stream = fs.createReadStream(__dirname + '/../../data/chemidplus/CurrentChemID.xml');
@@ -36,6 +40,7 @@ xml.on('endElement: Chemical', function(item) {
   // console.log(" id : " + synonym_list['id']);
   // if(chemical_cnt < 10 && item['NameList']) {
   db.serialize(function() {
+
     let stmt1 = db.prepare(`INSERT INTO synonyms_forxml(uuid, chemical_uuid, name, type, chemidplus_id) VALUES(?, ?, ?, ?, ?)`);
     let stmt2 = db.prepare(`INSERT INTO sourcelist(uuid, code, source) VALUES(?, ?, ?)`);
 
@@ -43,7 +48,7 @@ xml.on('endElement: Chemical', function(item) {
       // console.log(item['NameList']['$children']);
       // console.log(item['ClassificationList']['$children'].length);
 
-      db.run("begin transaction");
+      // db.run("begin transaction");
 
       for(let i = 0; i < item['NameList']['$children'].length; i++){
         let name_list = item['NameList']['$children'][i];
@@ -74,7 +79,9 @@ xml.on('endElement: Chemical', function(item) {
         }
       }
 
-      db.run("commit");
+      // db.run("commit");
+      // db.run("end transaction");
+
     }else{
       throw new Error('Something went wrong');
     }
