@@ -61,17 +61,6 @@ CREATE TABLE chemical_for_sym
 -- drop table chemical;
 -- alter table chemical_for_sym RENAME TO chemical;
 
-/* Create formular data */
-
--- formular table 생성
-CREATE TABLE formula (
-    uuid                TEXT NOT NULL PRIMARY KEY ,
-    type                TEXT NOT NULL, -- ff: FormulaFragmentList, mf: MolecularFormula
-    chemical_uuid       TEXT NOT NULL,
-    formula   TEXT,
-    FOREIGN KEY(chemical_uuid) REFERENCES chemical(uuid)
-);
-
 
 /* Create synonym data */
 
@@ -97,6 +86,8 @@ CREATE TABLE synonyms_forxml
   chemidplus_id TEXT NOT NULL
 );
 
+-- convert_chemidplusxml_database_synonym.js 실행
+
 SELECT sf.uuid, sf.name, sf.type, source.source
 FROM synonyms_forxml sf
 INNER JOIN sourcelist source ON sf.uuid = source.uuid
@@ -110,7 +101,33 @@ delete from sourcelist where uuid  in (select uuid from synonyms_forxml);
 delete from synonyms_forxml;
 -- select * from synonyms_forxml;
 
--- convert_chemidplusxml_database_synonym.js 실행
+-- update chemical_uuid at synonyms table
+-- move data from a synonyms_forxml to a synonyms table
+
+
+
+
+
+
+
+
+
+/* Create formular data */
+
+-- formular 임시 table 생성
+DROP TABLE formula_forxml;
+CREATE TABLE formula_forxml (
+    uuid                TEXT NOT NULL PRIMARY KEY ,
+    type                TEXT NOT NULL, -- ff: FormulaFragmentList, mf: MolecularFormula
+    chemical_uuid       TEXT NOT NULL,
+    formula   TEXT,
+    chemidplus_id TEXT
+);
+
+-- convert_chemidplusxml_database_formular.js 실행
+-- update chemical_uuid at formular_forxml
+-- copy the data in formular_forxml table to a formular table.
+
 
 
 
