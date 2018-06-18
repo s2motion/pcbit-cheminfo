@@ -97,19 +97,20 @@ WHERE source.code = 'na';
 -- select * from synonyms_forxml where type is null;
 
 -- synonym 관련 데이터 삭제
-delete from sourcelist where uuid  in (select uuid from synonyms_forxml);
-delete from synonyms_forxml;
--- select * from synonyms_forxml;
+-- delete from sourcelist where uuid  in (select uuid from synonyms_forxml);
+-- delete from synonyms_forxml;
+select * from synonyms_forxml;
 
 -- update chemical_uuid at synonyms table
+-- UPDATE synonyms_forxml
+-- SET chemical_uuid = (SELECT chem.uuid
+--                      FROM chemical_temp AS chem
+--                      WHERE chem.chemidplus_id = synonyms_forxml.chemidplus_id);
+
 -- move data from a synonyms_forxml to a synonyms table
-
-
-
-
-
-
-
+-- INSERT INTO synonyms(uuid, chemical_uuid, name, type) select uuid, chemical_uuid, name, type from synonyms_forxml;
+-- check if data that type is null exists. If it is, then check data
+-- select * from synonyms where type is null;
 
 
 /* Create formular data */
