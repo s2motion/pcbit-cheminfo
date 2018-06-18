@@ -86,13 +86,16 @@ xml.on('endElement: Chemical', function(item) {
         console.log(chemical_cnt + " added");
 
       }
-      //set chemical info on database
-      chemical_cnt += 1;
 
     });
   }else{
     //throw new Error('Something went wrong');
+    console.log(chemical_cnt + " skipped");
   }
+
+  //set chemical info on database
+  chemical_cnt += 1;
+
 });
 
 db.on("error", function(error) {
