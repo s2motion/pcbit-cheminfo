@@ -38,62 +38,61 @@ xml.on('endElement: Chemical', function(item) {
   synonym_list['id'] = item['$']['id']
 
   // console.log(" id : " + synonym_list['id']);
-  // if(chemical_cnt < 10 && item['NameList']) {
-  db.serialize(function() {
+  if(chemical_cnt > 200000) {
+    db.serialize(function() {
 
-    let stmt1 = db.prepare(`INSERT INTO synonyms_forxml(uuid, chemical_uuid, name, type, chemidplus_id) VALUES(?, ?, ?, ?, ?)`);
-    let stmt2 = db.prepare(`INSERT INTO sourcelist(uuid, code, source) VALUES(?, ?, ?)`);
+      let stmt1 = db.prepare(`INSERT INTO synonyms_forxml(uuid, chemical_uuid, name, type, chemidplus_id) VALUES(?, ?, ?, ?, ?)`);
+      let stmt2 = db.prepare(`INSERT INTO sourcelist(uuid, code, source) VALUES(?, ?, ?)`);
 
-    if(item['NameList'] && chemical_cnt > 100000){
-      // console.log(item['NameList']['$children']);
-      // console.log(item['ClassificationList']['$children'].length);
+      if(item['NameList']){
+      // if(item['NameList'] && chemical_cnt > 100000){
+        // console.log(item['NameList']['$children']);
+        // console.log(item['ClassificationList']['$children'].length);
 
-      // db.run("begin transaction");
+        // db.run("begin transaction");
 
-      for(let i = 0; i < item['NameList']['$children'].length; i++){
-        let name_list = item['NameList']['$children'][i];
+        for(let i = 0; i < item['NameList']['$children'].length; i++){
+          let name_list = item['NameList']['$children'][i];
 
-        if(name_list['$name']){
+          if(name_list['$name']){
 
-          synonym_list['uuid'] = uuidv1();
+            synonym_list['uuid'] = uuidv1();
 
-          // console.log(" id : " + synonym_list['id']
-          //   + " name type : " + name_list['$name'] + " name = " + name_list['$text']
-          //   );
+            // console.log(" id : " + synonym_list['id']
+            //   + " name type : " + name_list['$name'] + " name = " + name_list['$text']
+            //   );
 
-          let code_type = code_list[name_list['$name']];
+            let code_type = code_list[name_list['$name']];
 
-          stmt1.run([synonym_list['uuid'], '', name_list['$text'], code_type, synonym_list['id']]);
-          // stmt.finalize();
+            stmt1.run([synonym_list['uuid'], '', name_list['$text'], code_type, synonym_list['id']]);
+            // stmt.finalize();
 
-          //source list
-           if(name_list['SourceList']){
-              for(let i = 0; i < name_list['SourceList']['$children'].length; i++){
-                if(name_list['SourceList']['$children'][i]['$text']) {
-                  // console.log(" source name : " + name_list['SourceList']['$children'][i]['$text']);
-                  stmt2.run([synonym_list['uuid'], 'na', name_list['SourceList']['$children'][i]['$text']]);
-                  // stmt.finalize();
+            //source list
+             if(name_list['SourceList']){
+                for(let i = 0; i < name_list['SourceList']['$children'].length; i++){
+                  if(name_list['SourceList']['$children'][i]['$text']) {
+                    // console.log(" source name : " + name_list['SourceList']['$children'][i]['$text']);
+                    stmt2.run([synonym_list['uuid'], 'na', name_list['SourceList']['$children'][i]['$text']]);
+                    // stmt.finalize();
+                  }
                 }
-              }
-           }
+             }
+          }
         }
+
+        // db.run("commit");
+        // db.run("end transaction");
+
+        console.log(chemical_cnt + " added");
+
       }
+      //set chemical info on database
+      chemical_cnt += 1;
 
-      // db.run("commit");
-      // db.run("end transaction");
-
-    }else{
-      throw new Error('Something went wrong');
-    }
-
-
-    console.log(chemical_cnt + " added");
-
-    //set chemical info on database
-    chemical_cnt += 1;
-
-  });
-
+    });
+  }else{
+    //throw new Error('Something went wrong');
+  }
 });
 
 db.on("error", function(error) {
