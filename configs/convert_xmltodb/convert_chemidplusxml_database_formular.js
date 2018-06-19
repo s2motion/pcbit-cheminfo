@@ -16,7 +16,9 @@ db.run('PRAGMA synchronous=off');
 db.run('PRAGMA locking_mode=exclusive');
 
 //load ChemidIDPlus.xml (Current)
-// var stream = fs.createReadStream(__dirname + '/../../data/chemidplus/chemid_sample.xml');
+//test with sample
+//var stream = fs.createReadStream(__dirname + '/../../data/chemidplus/chemid_sample.xml');
+//original xml data
 var stream = fs.createReadStream(__dirname + '/../../data/chemidplus/CurrentChemID.xml');
 var xml = new XmlStream(stream);
 var chemical_cnt = 1;
@@ -39,13 +41,14 @@ xml.on('endElement: Chemical', function(item) {
   formula_list['id'] = item['$']['id']
 
   // console.log(" id : " + formula_list['id']);
-  if(chemical_cnt < 100) {
+  // if(formula_list['id'] == '' && chemical_cnt < 100) {
+  if(chemical_cnt < 200000) {
     db.serialize(function() {
 
       let stmt1 = db.prepare(`INSERT INTO formula_forxml(uuid, type, chemical_uuid, formula, chemidplus_id) VALUES(?, ?, ?, ?, ?)`);
       let stmt2 = db.prepare(`INSERT INTO sourcelist(uuid, code, source) VALUES(?, ?, ?)`);
 
-      //insert FormulaList
+      //insert FormulaList Morleculaformula
       if(item['FormulaList']){
         // console.log(item['FormulaList']['$children']);
 
@@ -81,7 +84,7 @@ xml.on('endElement: Chemical', function(item) {
 
       //insert FormulaFragmentList
       if(item['FormulaFragmentList']){
-        // console.log(item['FormulaList']['$children']);
+        // console.log(item['FormulaFragmentList']['$children']);
 
         for(let i = 0; i < item['FormulaFragmentList']['$children'].length; i++){
           let name_list = item['FormulaFragmentList']['$children'][i];
@@ -117,7 +120,7 @@ xml.on('endElement: Chemical', function(item) {
 
     });
   }else{
-    throw new Error('Something went wrong');
+    // throw new Error('Something went wrong');
   }
 });
 

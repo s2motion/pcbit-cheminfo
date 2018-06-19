@@ -111,23 +111,37 @@ select * from synonyms_forxml;
 -- INSERT INTO synonyms(uuid, chemical_uuid, name, type) select uuid, chemical_uuid, name, type from synonyms_forxml;
 -- check if data that type is null exists. If it is, then check data
 -- select * from synonyms where type is null;
+-- drop temporary table
+drop table synonyms_forxml;
 
 
 /* Create formular data */
 
--- formular 임시 table 생성
+-- 1. formular 임시 table 생성
 DROP TABLE formula_forxml;
 CREATE TABLE formula_forxml (
-    uuid                TEXT NOT NULL PRIMARY KEY ,
+    uuid                TEXT NOT NULL PRIMARY KEY,
     type                TEXT NOT NULL, -- ff: FormulaFragmentList, mf: MolecularFormula
     chemical_uuid       TEXT NOT NULL,
     formula   TEXT,
     chemidplus_id TEXT
 );
+-- select
+-- select * from formula_forxml;
 
--- convert_chemidplusxml_database_formular.js 실행
--- update chemical_uuid at formular_forxml
--- copy the data in formular_forxml table to a formular table.
+-- 2. convert_chemidplusxml_database_formular.js 실행
+
+-- cleansing if error exists
+-- delete from sourcelist where uuid in (select uuid from formula_forxml);
+-- delete from formula_forxml;
+
+-- 3. update chemical_uuid at formular_forxml
+-- UPDATE formular_forxml
+-- SET chemical_uuid = (SELECT chem.uuid
+--                      FROM chemical_temp AS chem
+--                      WHERE chem.chemidplus_id = formular_forxml.chemidplus_id);
+
+-- 4. copy the data in formular_forxml table to a formular table.
 
 
 

@@ -19,9 +19,6 @@ router.get('/', function(req, res, next) {
               chemidplus_id,
               display_formula,
               display_name,
-              systematic_name,
-              descriptor_name,
-              name_substance,
               cas_registry_number
             FROM chemical
               LIMIT 100`;
