@@ -8,10 +8,10 @@
 -- chemidplus_id가 중복되지 않으니 primary key로 사용해도 무방할듯
 CREATE TABLE chemical_temp
 (
-  uuid                TEXT,
-  chemidplus_id       TEXT PRIMARY KEY,
-  display_formula     TEXT,
-  display_name        TEXT
+  uuid            TEXT,
+  chemidplus_id   TEXT PRIMARY KEY,
+  display_formula TEXT,
+  display_name    TEXT
 );
 
 -- UPDATE classificationlist
@@ -20,7 +20,8 @@ CREATE TABLE chemical_temp
 --                      WHERE chem.chemidplus_id = classificationlist.chemidplus_id);
 -- 잘됨..
 
-select count(*) from classificationlist;
+SELECT count(*)
+FROM classificationlist;
 
 SELECT
   chem.uuid,
@@ -46,7 +47,7 @@ ORDER BY class.chemidplus_id
 -- SQLite에서는 drop column 지원하지 않음 따라서 테이블 삭제 후 생성
 CREATE TABLE chemical_for_sym
 (
-  uuid                TEXT PRIMARY KEY ,
+  uuid                TEXT PRIMARY KEY,
   chemidplus_id       TEXT,
   display_formula     TEXT,
   display_name        TEXT,
@@ -84,9 +85,13 @@ CREATE TABLE synonyms_forxml
 
 -- convert_chemidplusxml_database_synonym.js 실행
 
-SELECT sf.uuid, sf.name, sf.type, source.source
+SELECT
+  sf.uuid,
+  sf.name,
+  sf.type,
+  source.source
 FROM synonyms_forxml sf
-INNER JOIN sourcelist source ON sf.uuid = source.uuid
+  INNER JOIN sourcelist source ON sf.uuid = source.uuid
 WHERE source.code = 'na';
 
 -- check type column whether is null
@@ -95,7 +100,8 @@ WHERE source.code = 'na';
 -- synonym 관련 데이터 삭제
 -- delete from sourcelist where uuid  in (select uuid from synonyms_forxml);
 -- delete from synonyms_forxml;
-select * from synonyms_forxml;
+SELECT *
+FROM synonyms_forxml;
 
 -- update chemical_uuid at synonyms table
 -- UPDATE synonyms_forxml
@@ -108,7 +114,7 @@ select * from synonyms_forxml;
 -- check if data that type is null exists. If it is, then check data
 -- select * from synonyms where type is null;
 -- drop temporary table
-drop table synonyms_forxml;
+DROP TABLE synonyms_forxml;
 
 
 /* Create formular data */
@@ -116,11 +122,11 @@ drop table synonyms_forxml;
 -- 1. formular 임시 table 생성
 DROP TABLE formula_forxml;
 CREATE TABLE formula_forxml (
-    uuid                TEXT NOT NULL PRIMARY KEY,
-    type                TEXT NOT NULL, -- ff: FormulaFragmentList, mf: MolecularFormula
-    chemical_uuid       TEXT NOT NULL,
-    formula   TEXT,
-    chemidplus_id TEXT
+  uuid          TEXT NOT NULL PRIMARY KEY,
+  type          TEXT NOT NULL, -- ff: FormulaFragmentList, mf: MolecularFormula
+  chemical_uuid TEXT NOT NULL,
+  formula       TEXT,
+  chemidplus_id TEXT
 );
 -- select
 -- select * from formula_forxml;
@@ -140,25 +146,27 @@ CREATE TABLE formula_forxml (
 -- 4. copy the data in formular_forxml table to a formular table.
 
 
-
 /* Create NumberList data */
 -- 1. numberList 임시 table 생성
 DROP TABLE numberList_forxml;
 CREATE TABLE numberList_forxml (
-    uuid                TEXT NOT NULL PRIMARY KEY,
-    chemical_uuid       TEXT NOT NULL,
-    type                TEXT NOT NULL, -- cn: CASRegistryNumber, in : IdentificationNumber, on : OtherRegistryNumber, rn : RelatedRegistryNumber
-    registry_number   TEXT,
-    chemidplus_id TEXT
+  uuid            TEXT NOT NULL PRIMARY KEY,
+  chemical_uuid   TEXT NOT NULL,
+  type            TEXT NOT NULL, -- cn: CASRegistryNumber, in : IdentificationNumber, on : OtherRegistryNumber, rn : RelatedRegistryNumber
+  registry_number TEXT,
+  chemidplus_id   TEXT
 );
 -- select
-select * from numberList_forxml;
+SELECT *
+FROM numberList_forxml;
 
 -- 2. convert_chemidplusxml_database_numberlist.js 실행
 
 -- cleansing if error exists
-delete from sourcelist where uuid in (select uuid from numberList_forxml);
-delete from numberList_forxml;
+DELETE FROM sourcelist
+WHERE uuid IN (SELECT uuid
+               FROM numberList_forxml);
+DELETE FROM numberList_forxml;
 
 -- 3. update chemical_uuid at formular_forxml
 -- UPDATE formular_forxml
@@ -169,7 +177,65 @@ delete from numberList_forxml;
 -- 4. copy the data in formular_forxml table to a formular table.
 
 
+/* Create Locatorlist data */
+-- 1. Locatorlist 임시 table 생성
+-- DROP TABLE locatorlist_forxml;
+CREATE TABLE locatorlist_forxml
+(
+  uuid          TEXT NOT NULL
+    PRIMARY KEY,
+  chemical_uuid TEXT NOT NULL,
+  type          TEXT, -- {'FileLocator':'fl', 'InternetLocator':'il', 'SuperlistLocator':'sl'}
+  url           TEXT,
+  name          TEXT,
+  chemidplus_id TEXT
+);
 
+-- select
+SELECT *
+FROM locatorlist_forxml;
+
+-- 2. convert_chemidplusxml_database_locatorlist.js 실행
+
+-- cleansing if error exists
+-- delete from locatorlist_forxml;
+
+-- 3. update chemical_uuid at locatorlist_forxml
+-- UPDATE locatorlist_forxml
+-- SET chemical_uuid = (SELECT chem.uuid
+--                      FROM chemical_temp AS chem
+--                      WHERE chem.chemidplus_id = locatorlist_forxml.chemidplus_id);
+
+-- 4. copy the data in locatorlist_forxml table to a locatorlist table.
+
+
+/* Create notelist data */
+-- 1. notelist 임시 table 생성
+-- DROP TABLE notelist_forxml;
+CREATE TABLE notelist_forxml (
+  uuid            TEXT NOT NULL PRIMARY KEY ,
+  chemical_uuid  TEXT NOT NULL,
+  note            TEXT,
+  type            TEXT,
+  chemidplus_id   TEXT
+);
+
+-- select
+SELECT *
+FROM notelist_forxml;
+
+-- 2. convert_chemidplusxml_database_notelist.js 실행
+
+-- cleansing if error exists
+-- delete from locatorlist_forxml;
+
+-- 3. update chemical_uuid at notelist_forxml
+-- UPDATE notelist_forxml
+-- SET chemical_uuid = (SELECT chem.uuid
+--                      FROM chemical_temp AS chem
+--                      WHERE chem.chemidplus_id = notelist_forxml.chemidplus_id);
+
+-- 4. copy the data in notelist_forxml table to a notelist table.
 
 
 
