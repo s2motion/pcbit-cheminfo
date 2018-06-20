@@ -11,9 +11,9 @@ let db = new sqlite3.Database('../../db/pcbit.db', (err) => {
   console.log('Connected to the pcbit database.');
 });
 
-db.run('PRAGMA journal_mode=off');
+db.run('PRAGMA journal_mode=MEMORY');
 db.run('PRAGMA synchronous=off');
-db.run('PRAGMA locking_mode=exclusive');
+// db.run('PRAGMA locking_mode=exclusive');
 
 //load ChemidIDPlus.xml (Current)
 //test with sample
