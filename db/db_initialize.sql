@@ -11,11 +11,7 @@ CREATE TABLE chemical_temp
   uuid                TEXT,
   chemidplus_id       TEXT PRIMARY KEY,
   display_formula     TEXT,
-  display_name        TEXT,
-  systematic_name     TEXT,
-  descriptor_name     TEXT,
-  name_substance      TEXT,
-  cas_registry_number TEXT
+  display_name        TEXT
 );
 
 -- UPDATE classificationlist
@@ -134,6 +130,35 @@ CREATE TABLE formula_forxml (
 -- cleansing if error exists
 -- delete from sourcelist where uuid in (select uuid from formula_forxml);
 -- delete from formula_forxml;
+
+-- 3. update chemical_uuid at formular_forxml
+-- UPDATE formular_forxml
+-- SET chemical_uuid = (SELECT chem.uuid
+--                      FROM chemical_temp AS chem
+--                      WHERE chem.chemidplus_id = formular_forxml.chemidplus_id);
+
+-- 4. copy the data in formular_forxml table to a formular table.
+
+
+
+/* Create NumberList data */
+-- 1. numberList 임시 table 생성
+DROP TABLE numberList_forxml;
+CREATE TABLE numberList_forxml (
+    uuid                TEXT NOT NULL PRIMARY KEY,
+    chemical_uuid       TEXT NOT NULL,
+    type                TEXT NOT NULL, -- cn: CASRegistryNumber, in : IdentificationNumber, on : OtherRegistryNumber, rn : RelatedRegistryNumber
+    registry_number   TEXT,
+    chemidplus_id TEXT
+);
+-- select
+select * from numberList_forxml;
+
+-- 2. convert_chemidplusxml_database_numberlist.js 실행
+
+-- cleansing if error exists
+delete from sourcelist where uuid in (select uuid from numberList_forxml);
+delete from numberList_forxml;
 
 -- 3. update chemical_uuid at formular_forxml
 -- UPDATE formular_forxml

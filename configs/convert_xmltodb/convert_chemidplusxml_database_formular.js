@@ -42,7 +42,7 @@ xml.on('endElement: Chemical', function(item) {
 
   // console.log(" id : " + formula_list['id']);
   // if(formula_list['id'] == '' && chemical_cnt < 100) {
-  if(chemical_cnt < 200000) {
+  if(chemical_cnt >= 200000) {
     db.serialize(function() {
 
       let stmt1 = db.prepare(`INSERT INTO formula_forxml(uuid, type, chemical_uuid, formula, chemidplus_id) VALUES(?, ?, ?, ?, ?)`);
@@ -115,13 +115,12 @@ xml.on('endElement: Chemical', function(item) {
 
       //set chemical info on database
       console.log(chemical_cnt + " added");
-
-      chemical_cnt += 1;
-
     });
   }else{
     // throw new Error('Something went wrong');
   }
+
+  chemical_cnt += 1;
 });
 
 db.on("error", function(error) {
