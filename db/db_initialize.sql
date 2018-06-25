@@ -213,17 +213,28 @@ FROM locatorlist_forxml;
 -- delete from locatorlist_forxml;
 
 -- 3. update chemical_uuid at locatorlist_forxml
--- UPDATE locatorlist_forxml
--- SET chemical_uuid = (SELECT chem.uuid
---                      FROM chemical_temp AS chem
---                      WHERE chem.chemidplus_id = locatorlist_forxml.chemidplus_id);
+UPDATE locatorlist_forxml
+SET chemical_uuid = (SELECT chem.uuid
+                     FROM chemical_temp AS chem
+                     WHERE chem.chemidplus_id = locatorlist_forxml.chemidplus_id);
 
 -- 4. copy the data in locatorlist_forxml table to a locatorlist table.
+INSERT INTO locatorlist (uuid, chemical_uuid, type, url, name, chemidplus_id) SELECT
+                                                                                uuid,
+                                                                                chemical_uuid,
+                                                                                type,
+                                                                                url,
+                                                                                name,
+                                                                                chemidplus_id
+                                                                              FROM locatorlist_forxml;
+
+-- 5. drop temporary table
+DROP TABLE locatorlist_forxml;
 
 
 /* Create notelist data */
 -- 1. notelist 임시 table 생성
--- DROP TABLE notelist_forxml;
+DROP TABLE notelist_forxml;
 CREATE TABLE notelist_forxml (
   uuid            TEXT NOT NULL PRIMARY KEY ,
   chemical_uuid  TEXT NOT NULL,
@@ -239,22 +250,22 @@ FROM notelist_forxml;
 -- 2. convert_chemidplusxml_database_notelist.js 실행
 
 -- cleansing if error exists
--- delete from locatorlist_forxml;
+-- delete from sourcelist where uuid  in (select uuid from notelist_forxml);
+-- delete from notelist_forxml;
 
 -- 3. update chemical_uuid at notelist_forxml
--- UPDATE notelist_forxml
--- SET chemical_uuid = (SELECT chem.uuid
---                      FROM chemical_temp AS chem
---                      WHERE chem.chemidplus_id = notelist_forxml.chemidplus_id);
+UPDATE notelist_forxml
+SET chemical_uuid = (SELECT chem.uuid
+                     FROM chemical_temp AS chem
+                     WHERE chem.chemidplus_id = notelist_forxml.chemidplus_id);
 
 -- 4. copy the data in notelist_forxml table to a notelist table.
-
-drop table synonyms
-
-select * from synonyms;
-
-select * from locatorlist;
-
-
-
-
+INSERT INTO notelist (uuid, chemical_uuid, note, type, chemidplus_id) SELECT
+                                                                        uuid,
+                                                                        chemical_uuid,
+                                                                        note,
+                                                                        type,
+                                                                        chemidplus_id
+                                                                      FROM notelist_forxml;
+-- 5. drop temporary table (notelist_forxml)
+-- DROP TABLE notelist_forxml;

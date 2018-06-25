@@ -12,14 +12,14 @@ let db = new sqlite3.Database('../../db/pcbit.db', (err) => {
 });
 
 db.run('PRAGMA journal_mode=off');
-db.run('PRAGMA synchronous=off');
-db.run('PRAGMA locking_mode=exclusive');
+// db.run('PRAGMA synchronous=off');
+// db.run('PRAGMA locking_mode=exclusive');
 
 //load ChemidIDPlus.xml (Current)
 //test with sample
-var stream = fs.createReadStream(__dirname + '/../../data/chemidplus/chemid_sample.xml');
+// var stream = fs.createReadStream(__dirname + '/../../data/chemidplus/chemid_sample.xml');
 //original xml data
-// var stream = fs.createReadStream(__dirname + '/../../data/chemidplus/CurrentChemID.xml');
+var stream = fs.createReadStream(__dirname + '/../../data/chemidplus/CurrentChemID.xml');
 var xml = new XmlStream(stream);
 var chemical_cnt = 1;
 var xml_number = 0;
@@ -41,9 +41,9 @@ xml.on('endElement: Chemical', function(item) {
 
   note_list['id'] = item['$']['id']
 
-  console.log(" id : " + note_list['id']);
-  if(note_list['id'] == '000050066' && chemical_cnt < 100) {
-  // if(chemical_cnt <= 200000) {
+  // console.log(" id : " + note_list['id']);
+  // if(note_list['id'] == '000050066' && chemical_cnt < 100) {
+  if(chemical_cnt > 200000) {
     db.serialize(function() {
 
       let stmt1 = db.prepare(`INSERT INTO notelist_forxml(uuid, chemical_uuid, note, type,
@@ -53,7 +53,7 @@ xml.on('endElement: Chemical', function(item) {
 
       //insert NoteList
       if(item['NoteList']){
-        console.log(item['NoteList']['$children']);
+        // console.log(item['NoteList']['$children']);
 
         for(let i = 0; i < item['NoteList']['$children'].length; i++){
           let name_list = item['NoteList']['$children'][i];
@@ -62,9 +62,9 @@ xml.on('endElement: Chemical', function(item) {
 
             note_list['uuid'] = uuidv1();
 
-            console.log(" id : " + note_list['id']
-              + " name type : " + name_list['$name'] + " name = " + name_list['$text']
-              );
+            // console.log(" id : " + note_list['id']
+            //   + " name type : " + name_list['$name'] + " name = " + name_list['$text']
+            //   );
 
             let code_type = code_list[name_list['$name']];
 

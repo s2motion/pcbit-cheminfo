@@ -42,7 +42,7 @@ xml.on('endElement: Chemical', function(item) {
 
   // console.log(" id : " + locator_list['id']);
   // if(locator_list['id'] == '000035676' && chemical_cnt < 100) {
-  if(chemical_cnt <= 200000) {
+  if(chemical_cnt > 200000) {
     db.serialize(function() {
 
       let stmt1 = db.prepare(`INSERT INTO locatorlist_forxml(uuid, chemical_uuid, type, url, name, chemidplus_id)
@@ -81,7 +81,7 @@ xml.on('endElement: Chemical', function(item) {
 
     });
   }else{
-    throw new Error('Something went wrong');
+    // throw new Error('Something went wrong');
   }
 
   //set chemical info on database
