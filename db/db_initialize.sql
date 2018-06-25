@@ -138,13 +138,16 @@ CREATE TABLE formula_forxml (
 -- delete from formula_forxml;
 
 -- 3. update chemical_uuid at formular_forxml
--- UPDATE formular_forxml
+-- UPDATE formula_forxml
 -- SET chemical_uuid = (SELECT chem.uuid
 --                      FROM chemical_temp AS chem
---                      WHERE chem.chemidplus_id = formular_forxml.chemidplus_id);
+--                      WHERE chem.chemidplus_id = formula_forxml.chemidplus_id);
 
 -- 4. copy the data in formular_forxml table to a formular table.
-
+-- INSERT INTO formula(uuid, type, chemical_uuid, formula) select uuid, type, chemical_uuid, formula from formula_forxml;
+-- select count(*) from formula;
+-- 5. drop table formula_forxml;
+drop table formula_forxml;
 
 /* Create NumberList data */
 -- 1. numberList 임시 table 생성
@@ -156,8 +159,9 @@ CREATE TABLE numberList_forxml (
   registry_number TEXT,
   chemidplus_id   TEXT
 );
+
 -- select
-SELECT *
+SELECT count(distinct chemidplus_id)
 FROM numberList_forxml;
 
 -- 2. convert_chemidplusxml_database_numberlist.js 실행
@@ -169,13 +173,22 @@ WHERE uuid IN (SELECT uuid
 DELETE FROM numberList_forxml;
 
 -- 3. update chemical_uuid at formular_forxml
--- UPDATE formular_forxml
--- SET chemical_uuid = (SELECT chem.uuid
---                      FROM chemical_temp AS chem
---                      WHERE chem.chemidplus_id = formular_forxml.chemidplus_id);
+UPDATE numberList_forxml
+SET chemical_uuid = (SELECT chem.uuid
+                     FROM chemical_temp AS chem
+                     WHERE chem.chemidplus_id = numberList_forxml.chemidplus_id);
 
 -- 4. copy the data in formular_forxml table to a formular table.
+-- INSERT INTO numberlist (uuid, chemical_uuid, type, registry_number, chemidplus_id) SELECT
+--                                                                                      uuid,
+--                                                                                      chemical_uuid,
+--                                                                                      type,
+--                                                                                      registry_number,
+--                                                                                      chemidplus_id
+--                                                                                    FROM numberList_forxml;
 
+-- 5. drop temporary table numberList_forxml
+-- DROP TABLE numberList_forxml;
 
 /* Create Locatorlist data */
 -- 1. Locatorlist 임시 table 생성
@@ -196,7 +209,6 @@ SELECT *
 FROM locatorlist_forxml;
 
 -- 2. convert_chemidplusxml_database_locatorlist.js 실행
-
 -- cleansing if error exists
 -- delete from locatorlist_forxml;
 
@@ -237,8 +249,11 @@ FROM notelist_forxml;
 
 -- 4. copy the data in notelist_forxml table to a notelist table.
 
+drop table synonyms
 
+select * from synonyms;
 
+select * from locatorlist;
 
 
 

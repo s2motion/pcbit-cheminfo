@@ -61,11 +61,12 @@ CREATE TABLE notelist (
   FOREIGN KEY(chemical_uuid) REFERENCES chemical(uuid)
 );
 
-CREATE TABLE othernumberlist (
-  uuid                      TEXT NOT NULL PRIMARY KEY,
-  chemical_uuid             TEXT NOT NULL,
-  related_registry_number   TEXT,
-  other_registry_number     TEXT,
+CREATE TABLE numberlist (
+  uuid            TEXT NOT NULL PRIMARY KEY,
+  chemical_uuid   TEXT NOT NULL,
+  type            TEXT NOT NULL, -- cn: CASRegistryNumber, in : IdentificationNumber, on : OtherRegistryNumber, rn : RelatedRegistryNumber
+  registry_number TEXT,
+  chemidplus_id   TEXT,
   FOREIGN KEY(chemical_uuid) REFERENCES chemical(uuid)
 );
 

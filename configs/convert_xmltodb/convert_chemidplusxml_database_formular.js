@@ -12,8 +12,8 @@ let db = new sqlite3.Database('../../db/pcbit.db', (err) => {
 });
 
 db.run('PRAGMA journal_mode=off');
-db.run('PRAGMA synchronous=off');
-db.run('PRAGMA locking_mode=exclusive');
+// db.run('PRAGMA synchronous=off');
+// db.run('PRAGMA locking_mode=exclusive');
 
 //load ChemidIDPlus.xml (Current)
 //test with sample
@@ -42,7 +42,7 @@ xml.on('endElement: Chemical', function(item) {
 
   // console.log(" id : " + formula_list['id']);
   // if(formula_list['id'] == '' && chemical_cnt < 100) {
-  if(chemical_cnt >= 200000) {
+  if(chemical_cnt > 200000) {
     db.serialize(function() {
 
       let stmt1 = db.prepare(`INSERT INTO formula_forxml(uuid, type, chemical_uuid, formula, chemidplus_id) VALUES(?, ?, ?, ?, ?)`);

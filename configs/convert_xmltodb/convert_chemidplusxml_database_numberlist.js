@@ -12,8 +12,8 @@ let db = new sqlite3.Database('../../db/pcbit.db', (err) => {
 });
 
 db.run('PRAGMA journal_mode=off');
-db.run('PRAGMA synchronous=off');
-db.run('PRAGMA locking_mode=exclusive');
+// db.run('PRAGMA synchronous=off');
+// db.run('PRAGMA locking_mode=exclusive');
 
 //load ChemidIDPlus.xml (Current)
 //test with sample
