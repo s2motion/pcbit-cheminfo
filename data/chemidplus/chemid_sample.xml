@@ -690,7 +690,8 @@
         <ClassificationList>
             <ClassificationCode>Agricultural Chemical
                 <SourceList>
-                    <Source>RTECS</Source></SourceList>
+                    <Source>RTECS</Source>
+                </SourceList>
             </ClassificationCode>
             <ClassificationCode>Disinfectant
                 <SourceList>

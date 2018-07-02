@@ -1,10 +1,43 @@
 extends layout
 
+block extrastuff
+  link(rel='stylesheet', href='//cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css')
+  script(src='//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')
+  script(src='//cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js')
+
+  script.
+    $(document).ready( function (){
+      $('#dataTable').DataTable();
+    });
+
 block content
   div(class='container')
     div(class='row')
-        div(class='col-md-12 vcenter')          
+        div(class='col-md-12 vcenter')
           div(class='form-group has-feedback has-search')
             span(class='glyphicon glyphicon-search form-control-feedback')
             input(type='text', class='form-control', placeholder='Search')
     div(class='row')
+      div(class='col-md-12')
+        table#dataTable(class='table table-striped table-bordered', style='width:100%')
+          thead
+            tr
+              td Chemical ID
+              td Display Formular
+              td Display Name
+              td Systematic Name
+              td Descriptor Name
+              td Substance Name
+              td CAS Registry Number
+          tbody
+            each chemical in chemical_list
+              tr
+                td #{chemical.chemidplus_id}
+                td #{chemical.display_formular}
+                td #{chemical.display_name}
+                td #{chemical.systematic_name}
+                td #{chemical.descriptor_name}
+                td #{chemical.substance_name}
+                td #{chemical.cas_registry_number}
+
+
