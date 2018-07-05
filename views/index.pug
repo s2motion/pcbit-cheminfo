@@ -22,22 +22,28 @@ block content
         table#dataTable(class='table table-striped table-bordered', style='width:100%')
           thead
             tr
-              td Chemical ID
-              td Display Formular
-              td Display Name
-              td Systematic Name
-              td Descriptor Name
-              td Substance Name
-              td CAS Registry Number
+              td No.
+              td CAS No.
+              td Chemical Name
+              //td Chemical ID
+              //td Display Formular
+              //td Display Name
+              //td Systematic Name
+              //td Descriptor Name
+              //td Substance Name
+              //td CAS Registry Number
           tbody
             each chemical in chemical_list
               tr
-                td #{chemical.chemidplus_id}
-                td #{chemical.display_formular}
-                td #{chemical.display_name}
-                td #{chemical.systematic_name}
-                td #{chemical.descriptor_name}
-                td #{chemical.substance_name}
+                td
                 td #{chemical.cas_registry_number}
+                td #{chemical.display_name}
+                //td #{chemical.chemidplus_id}
+                //td #{chemical.display_formular}
+                //td #{chemical.display_name}
+                //td #{chemical.systematic_name}
+                //td #{chemical.descriptor_name}
+                //td #{chemical.substance_name}
+                //td #{chemical.cas_registry_number}
 
 
